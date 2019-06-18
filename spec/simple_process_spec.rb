@@ -2,8 +2,6 @@
 
 require 'spec_helper'
 
-Dir['./spec/support/processes/simple_process/operations/*.rb'].each { |file| require file }
-
 describe Flow::Manager do
   let(:config) do
     Flow::Config.new.tap { |config| config.load('./spec/support/processes/simple_process/') }

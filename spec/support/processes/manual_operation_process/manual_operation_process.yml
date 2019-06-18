@@ -1,4 +1,4 @@
-tag: first_process
+tag: manual_operation_process
 start:
   - first_operation
 operations:
@@ -6,6 +6,7 @@ operations:
     completed:
       - second_operation: start
   - tag: second_operation
+    manual: true
     completed:
       - third_operation: start
   - tag: third_operation

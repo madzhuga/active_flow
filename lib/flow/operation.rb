@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
+require 'pry'
+
 module Flow
   # Very basic operation implementation
   class Operation
     include ActByTag
 
-    attr_reader :config, :context, :status
+    attr_reader :config, :context, :status, :tag, :process
 
-    def initialize(config, context)
+    def initialize(config, process, context)
       @config = config
+      @process = process
       @context = context
+      @status = 'new'
 
       extend_by_tag
     end
@@ -20,11 +24,24 @@ module Flow
 
     def complete
       perform if respond_to?(:perform)
-      @status = 'complete'
+      @status = 'completed'
+      process.operation_completed(self) if manual?
+    end
+
+    def completed?
+      @status == 'completed'
     end
 
     def ready?
-      status.nil?
+      status == 'new' && !manual?
+    end
+
+    def waiting?
+      status == 'new' && manual?
+    end
+
+    def manual?
+      @config['manual'] == true
     end
   end
 end

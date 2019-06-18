@@ -5,7 +5,7 @@ module Flow
   class Process
     include ActByTag
 
-    attr_reader :config, :context
+    attr_reader :config, :context, :operations
 
     def initialize(config, context)
       @config = config
@@ -18,18 +18,22 @@ module Flow
     def start
       @operations = config['start'].map do |tag|
         new_config = config['operations'].find { |o| o['tag'] == tag }
-        Operation.new(new_config, context)
+        Operation.new(new_config, self, context)
       end
       run_iteration
     end
 
+    def operation_completed(operation)
+      build_next_operations(operation)
+      run_iteration
+    end
+
     def run_iteration
-      next_operations = @operations.select(&:ready?)
-      next_operations.map(&:complete)
+      iteration_operations = @operations.select(&:ready?)
 
-      next_operations.map do |old_operation|
-        next if old_operation.config[old_operation.status].nil?
+      iteration_operations.map(&:complete)
 
+      iteration_operations.map do |old_operation|
         build_next_operations(old_operation)
       end
 
@@ -37,10 +41,12 @@ module Flow
     end
 
     def build_next_operations(old_operation)
+      return if old_operation.config[old_operation.status].nil?
+
       old_operation.config[old_operation.status].each do |operation_conf|
         operation_conf.each do |tag, _value|
           new_config = config['operations'].find { |o| o['tag'] == tag }
-          new_operations = Operation.new(new_config, old_operation.context)
+          new_operations = Operation.new(new_config, self, old_operation.context)
           @operations << new_operations
         end
       end
