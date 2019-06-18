@@ -7,7 +7,8 @@ module Flow
   class Operation
     include ActByTag
 
-    attr_reader :config, :context, :status, :process
+    attr_reader :config, :context, :process
+    attr_accessor :status
 
     def initialize(config, process, context)
       @config = config
@@ -23,9 +24,11 @@ module Flow
     end
 
     def complete
-      perform if respond_to?(:perform)
-      @status = 'completed'
-      process.operation_completed(self) if manual?
+      runner.complete
+    end
+
+    def runner
+      OperationRunner.new(self)
     end
 
     def completed?
