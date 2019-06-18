@@ -1,0 +1,11 @@
+tag: first_process
+start:
+  - first_operation
+operations:
+  - tag: first_operation
+    complete:
+      - second_operation: start
+  - tag: second_operation
+    complete:
+      - third_operation: start
+  - tag: third_operation
