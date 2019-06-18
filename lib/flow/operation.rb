@@ -28,7 +28,7 @@ module Flow
     end
 
     def runner
-      OperationRunner.new(self)
+      @runner ||= OperationRunner.new(self)
     end
 
     def completed?
