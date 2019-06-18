@@ -2,17 +2,14 @@
 
 require 'spec_helper'
 
-describe Pm::Manager do
-  let(:process) { Pm::Manager.start('first_process', { 'log' => [] }, config) }
+Dir['./spec/support/processes/simple_process/operations/*.rb'].each { |file| require file }
 
+describe Flow::Manager do
   let(:config) do
-    Dir['./spec/support/processes/simple_process/operations/*.rb']
-      .each { |file| require file }
-
-    config = Pm::Config.new
-    config.load('./spec/support/processes/simple_process/')
-    config
+    Flow::Config.new.tap { |config| config.load('./spec/support/processes/simple_process/') }
   end
+
+  let(:process) { described_class.start('first_process', { 'log' => [] }, config) }
 
   it 'runs all operations' do
     expect(process.context['log'].join(' && ')).to eq(

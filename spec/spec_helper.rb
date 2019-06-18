@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require './lib/flow/act_by_tag'
 
-require 'pry'
-require_relative '../lib/flow'
+Dir['./lib/flow/*.rb'].each { |file| require file }
+require './lib/flow.rb'
