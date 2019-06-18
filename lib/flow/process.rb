@@ -40,16 +40,19 @@ module Flow
       run_iteration if @operations.any?(&:ready?)
     end
 
-    def build_next_operations(old_operation)
-      return if old_operation.config[old_operation.status].nil?
+    def build_next_operations(operation)
+      return if operation.config[operation.status].nil?
 
-      old_operation.config[old_operation.status].each do |operation_conf|
+      next_operations(operation).each do |operation_conf|
         operation_conf.each do |tag, _value|
           new_config = config['operations'].find { |o| o['tag'] == tag }
-          new_operations = Operation.new(new_config, self, old_operation.context)
-          @operations << new_operations
+          @operations << Operation.new(new_config, self, operation.context)
         end
       end
+    end
+
+    def next_operations(operation)
+      operation.config[operation.status]
     end
   end
 end

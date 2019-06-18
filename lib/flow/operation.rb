@@ -7,7 +7,7 @@ module Flow
   class Operation
     include ActByTag
 
-    attr_reader :config, :context, :status, :tag, :process
+    attr_reader :config, :context, :status, :process
 
     def initialize(config, process, context)
       @config = config
