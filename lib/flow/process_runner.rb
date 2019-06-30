@@ -30,8 +30,8 @@ module Flow
 
       next_operations(operation).each do |operation_conf|
         operation_conf.each do |tag, _value|
-          process.operations << Operation.new(
-            operation_config(tag), self, operation.context
+          process.operations << Operation.create(
+            operation_config(tag), process, operation.context
           )
         end
       end

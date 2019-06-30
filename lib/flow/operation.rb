@@ -11,7 +11,10 @@ module Flow
     attr_accessor :status
 
     def self.create(config, process, context)
-      new(config, process, context)
+      operation = new(config, process, context)
+      Callbacks.run('operation', 'create', operation: operation)
+      Callbacks.run(operation.tag.to_s, 'create', operation: operation)
+      operation
     end
 
     def initialize(config, process, context)

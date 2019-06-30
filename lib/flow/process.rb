@@ -4,7 +4,7 @@ module Flow
   class Process
     include ActByTag
 
-    attr_reader :config, :context, :operations
+    attr_reader :config, :context, :operations, :tag
 
     def self.create(config, context)
       process = new(config, context)
@@ -14,12 +14,16 @@ module Flow
     def initialize(config, context)
       @config = config
       @context = context
+      @tag = @config['tag']
       @operations = []
 
       extend_by_tag
     end
 
     def create
+      Callbacks.run('process', 'create', process: self)
+      Callbacks.run(tag, 'create', process: self)
+
       @operations = config['start'].map do |tag|
         new_config = config['operations'].find { |o| o['tag'] == tag }
         Operation.create(new_config, self, context)
