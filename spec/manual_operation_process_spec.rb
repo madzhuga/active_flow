@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Flow::Manager do
   let(:config) do
-    Flow::Config.new.tap { |config| config.load('./spec/support/processes/manual_operation_process/') }
+    Flow::Config.load('./spec/support/processes/manual_operation_process/')
   end
 
   let!(:process) { described_class.start('manual_operation_process', { 'log' => [] }, config) }
