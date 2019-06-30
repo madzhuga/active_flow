@@ -10,6 +10,10 @@ module Flow
     attr_reader :config, :context, :process
     attr_accessor :status
 
+    def self.create(config, process, context)
+      new(config, process, context)
+    end
+
     def initialize(config, process, context)
       @config = config
       @process = process

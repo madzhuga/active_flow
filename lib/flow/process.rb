@@ -6,6 +6,11 @@ module Flow
 
     attr_reader :config, :context, :operations
 
+    def self.create(config, context)
+      process = new(config, context)
+      process.create
+    end
+
     def initialize(config, context)
       @config = config
       @context = context
@@ -17,12 +22,13 @@ module Flow
     def create
       @operations = config['start'].map do |tag|
         new_config = config['operations'].find { |o| o['tag'] == tag }
-        Operation.new(new_config, self, context)
+        Operation.create(new_config, self, context)
       end
+
+      self
     end
 
     def start
-      create
       runner.run
     end
 

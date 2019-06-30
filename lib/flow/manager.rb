@@ -15,9 +15,7 @@ module Flow
       @config = configuration unless configuration.nil?
 
       process_config = config.config[tag]
-      process = Process.new(process_config, context)
-      process.start
-      process
+      Process.create(process_config, context).tap(&:start)
     end
   end
 end
