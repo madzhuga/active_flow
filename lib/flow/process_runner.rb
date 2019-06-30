@@ -22,7 +22,15 @@ module Flow
         build_next_operations(old_operation)
       end
 
-      run if process.operations.any?(&:ready?)
+      if process.operations.any?(&:ready?)
+        run
+      else
+        complete
+      end
+    end
+
+    def complete
+      process.complete
     end
 
     def build_next_operations(operation)

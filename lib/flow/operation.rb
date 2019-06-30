@@ -12,9 +12,12 @@ module Flow
 
     def self.create(config, process, context)
       operation = new(config, process, context)
-      Callbacks.run('operation', 'create', operation: operation)
-      Callbacks.run(operation.tag.to_s, 'create', operation: operation)
+      operation.create
       operation
+    end
+
+    def create
+      run_callback('create')
     end
 
     def initialize(config, process, context)
@@ -32,6 +35,16 @@ module Flow
 
     def complete
       runner.complete
+      status_changed
+    end
+
+    def status_changed
+      run_callback('status_changed')
+    end
+
+    def run_callback(kind)
+      Callbacks.run('operation', kind, operation: self)
+      Callbacks.run(tag.to_s, kind, operation: self)
     end
 
     def runner
