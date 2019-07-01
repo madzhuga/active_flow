@@ -38,8 +38,10 @@ module Flow
 
       next_operations(operation).each do |operation_conf|
         operation_conf.each do |tag, _value|
+          new_context = ContextBuilder.build(operation.context)
+
           process.operations << Operation.create(
-            operation_config(tag), process, operation.context
+            operation_config(tag), process, new_context
           )
         end
       end
